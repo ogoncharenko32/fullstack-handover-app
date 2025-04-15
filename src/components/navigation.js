@@ -15,12 +15,6 @@ const Navigation = () => {
         <h2 className="text-2xl size-semibold">Handover App</h2>
       </div>
       <div className="p-4 flex gap-4 justify-center items-center">
-        {/* <Link
-          className="block px-4 py-2 w-fit border rounded-lg text-nowrap cursor-pointer"
-          href="/dashboard"
-        >
-          Dashboard
-        </Link> */}
         <SignedOut>
           <SignInButton mode="modal">
             <button className="block px-4 py-2 w-fit border rounded-lg text-nowrap cursor-pointer">
@@ -34,6 +28,12 @@ const Navigation = () => {
           </SignUpButton>
         </SignedOut>
         <SignedIn>
+          <Link
+            className="block px-4 py-2 w-fit border rounded-lg text-nowrap cursor-pointer"
+            href="/dashboard"
+          >
+            Dashboard
+          </Link>
           <SignOutButton>
             <button className="block px-4 py-2 w-fit border rounded-lg text-nowrap cursor-pointer">
               Sign Out
