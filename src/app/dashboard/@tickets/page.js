@@ -61,7 +61,12 @@ const Tickets = () => {
       return "No link provided";
     }
     if (link.includes("jira")) {
-      return link.split("/")[link.split("/").length - 1];
+      const ticketName = link.split("/")[link.split("/").length - 1];
+      if (ticketName.includes("?")) {
+        return ticketName.split("?")[0];
+      } else {
+        return ticketName;
+      }
     } else if (link.includes("force.com")) {
       return "SFDC";
     } else {
