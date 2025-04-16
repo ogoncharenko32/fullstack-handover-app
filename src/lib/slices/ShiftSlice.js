@@ -1,10 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
+const axiosInstance = axios.create({
+  baseURL: "http://138.201.159.116:3030",
+});
+
 export const fetchShifts = createAsyncThunk(
   "shifts/fetchShifts",
   async (selectedDay) => {
-    const request = await axios.get(`http://localhost:3030/browse/shift`, {
+    const request = await axiosInstance.get(`/browse/shift`, {
       params: {
         date: selectedDay,
       },
@@ -17,7 +21,7 @@ export const fetchShifts = createAsyncThunk(
 export const createShift = createAsyncThunk(
   "shifts/createShift",
   async (name) => {
-    const request = await axios.post(`http://localhost:3030/browse/shift`, {
+    const request = await axiosInstance.post(`/browse/shift`, {
       name,
     });
     const responce = request.data;

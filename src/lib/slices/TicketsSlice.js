@@ -1,10 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
+const axiosInstance = axios.create({
+  baseURL: "http://138.201.159.116:3030",
+});
+
 export const fetchTickets = createAsyncThunk(
   "tickets/fetchTickets",
   async (id) => {
-    const request = await axios.get(`http://localhost:3030/browse/shift/${id}`);
+    const request = await axiosInstance.get(`/browse/shift/${id}`);
     const responce = request.data;
     return responce;
   }
@@ -21,7 +25,7 @@ export const createTicket = createAsyncThunk(
     user_id,
     user_name,
   }) => {
-    const request = await axios.post(`http://localhost:3030/browse/ticket`, {
+    const request = await axiosInstance.post(`/browse/ticket`, {
       link,
       description,
       status,
@@ -38,16 +42,13 @@ export const createTicket = createAsyncThunk(
 export const updateTicket = createAsyncThunk(
   "tickets/updateTicket",
   async ({ link, description, status, important, ticket_id, shift_id }) => {
-    const request = await axios.put(
-      `http://localhost:3030/browse/ticket/${ticket_id}`,
-      {
-        link,
-        description,
-        status,
-        important,
-        shift_id,
-      }
-    );
+    const request = await axiosInstance.put(`/browse/ticket/${ticket_id}`, {
+      link,
+      description,
+      status,
+      important,
+      shift_id,
+    });
     const responce = request.data;
     return responce;
   }
@@ -56,9 +57,7 @@ export const updateTicket = createAsyncThunk(
 export const deleteTicket = createAsyncThunk(
   "tickets/deleteTicket",
   async (ticket_id) => {
-    const request = await axios.delete(
-      `http://localhost:3030/browse/ticket/${ticket_id}`
-    );
+    const request = await axiosInstance.delete(`/browse/ticket/${ticket_id}`);
     const responce = request.data;
     return responce;
   }
