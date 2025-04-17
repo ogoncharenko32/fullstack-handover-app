@@ -1,6 +1,10 @@
 "use client";
 
-import { fetchTickets, deleteTicket } from "@/lib/slices/TicketsSlice";
+import {
+  fetchTickets,
+  deleteTicket,
+  setFilter,
+} from "@/lib/slices/TicketsSlice";
 import React, { use, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RxCircleBackslash, RxExternalLink } from "react-icons/rx";
@@ -9,6 +13,8 @@ import { useUser } from "@clerk/nextjs";
 import { MdEdit } from "react-icons/md";
 import { IoIosArrowRoundDown } from "react-icons/io";
 import ExportModal from "./exportModal";
+import { useRouter } from "next/navigation";
+import { BiRefresh } from "react-icons/bi";
 
 const Tickets = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,6 +26,7 @@ const Tickets = () => {
   const [status, setStatus] = useState("");
   const [important, setImportant] = useState(false);
   const [ticket_id, setTicketId] = useState(null);
+  const router = useRouter();
 
   const user = useUser();
 
@@ -28,7 +35,10 @@ const Tickets = () => {
     loading,
     error,
   } = useSelector((state) => state.tickets);
+
   const { selectedShift: shiftId } = useSelector((state) => state.shifts);
+  const { sort, sort_by } = useSelector((state) => state.tickets.filter);
+  const { filter } = useSelector((state) => state.tickets);
   const dispatch = useDispatch();
 
   const handleEditTicket = (ticket) => {
@@ -53,8 +63,8 @@ const Tickets = () => {
 
   useEffect(() => {
     if (shiftId === 0) return;
-    dispatch(fetchTickets(shiftId));
-  }, [shiftId, dispatch]);
+    dispatch(fetchTickets({ id: shiftId, filter }));
+  }, [shiftId, sort, sort_by, dispatch]);
 
   const ticketName = (link) => {
     if (!link) {
@@ -74,11 +84,25 @@ const Tickets = () => {
     }
   };
 
+  const handleSetFilter = (filter) => {
+    dispatch(setFilter(filter));
+  };
+
   return (
     <div className=" w-full min-w-fit border rounded-md p-2 border-gray-500">
       <div className="flex justify-between text-center">
         Tickets
         <div className="flex gap-2">
+          <button
+            className="cursor-pointer "
+            onClick={() => dispatch(fetchTickets({ id: shiftId, filter }))}
+          >
+            {loading ? (
+              <BiRefresh className="animate-spin" size={24} />
+            ) : (
+              <BiRefresh size={24} />
+            )}
+          </button>
           {tickets && tickets.length > 0 && (
             <button
               className="p-2 mb-1 border border-gray-400 rounded-lg cursor-pointer min-w-fit hover:bg-gray-400 hover:text-gray-100 hover:shadow-md hover:shadow-gray-500/50"
@@ -133,12 +157,28 @@ const Tickets = () => {
         <p className="flex  items-center text-xs w-[120px] md:w-[250px] xl:w-[400px] max-w-md justify-center">
           Description
         </p>
-        <p className="flex  items-center text-xs w-[40px] lg:w-[100px] justify-center ml-auto">
+        <button
+          onClick={() => {
+            handleSetFilter({
+              sort: sort === "asc" ? "desc" : "asc",
+              sort_by: "status",
+            });
+          }}
+          className="flex  items-center text-xs w-[40px] lg:w-[100px] justify-center ml-auto cursor-pointer"
+        >
           Status
-        </p>
-        <p className="flex  items-center text-xs w-[40px] justify-center">
+        </button>
+        <button
+          onClick={() => {
+            handleSetFilter({
+              sort: sort === "asc" ? "desc" : "asc",
+              sort_by: "important",
+            });
+          }}
+          className="flex  items-center text-xs w-[40px] justify-center cursor-pointer"
+        >
           Imp
-        </p>
+        </button>
         <p className="flex  items-center text-xs invisible w-0 lg:visible  lg:w-[150px] justify-end">
           Owner
         </p>

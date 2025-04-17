@@ -1,14 +1,18 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const axiosInstance = axios.create({
-  baseURL: "http://138.201.159.116:3030",
+  baseURL: "http://localhost:3030",
+  // baseURL: "http://138.201.159.116:3030",
 });
 
 export const fetchTickets = createAsyncThunk(
   "tickets/fetchTickets",
-  async (id) => {
-    const request = await axiosInstance.get(`/browse/shift/${id}`);
+  async ({ id, filter }) => {
+    const request = await axiosInstance.get(`/browse/shift/${id}`, {
+      params: filter,
+    });
     const responce = request.data;
     return responce;
   }
@@ -69,6 +73,15 @@ const ticketsSlice = createSlice({
     loading: false,
     error: null,
     data: [],
+    filter: {
+      sort: "asc",
+      sort_by: "created_at",
+    },
+  },
+  reducers: {
+    setFilter: (state, action) => {
+      state.filter = action.payload;
+    },
   },
 
   extraReducers: (builder) => {
@@ -125,5 +138,7 @@ const ticketsSlice = createSlice({
       });
   },
 });
+
+export const { setFilter } = ticketsSlice.actions;
 
 export default ticketsSlice.reducer;

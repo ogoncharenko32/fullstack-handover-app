@@ -28,6 +28,13 @@ const Navigation = () => {
           </SignUpButton>
         </SignedOut>
         <SignedIn>
+          <a
+            className="block px-4 py-2 w-fit border rounded-lg text-nowrap cursor-pointer"
+            href="https://jira-cableos.harmonicinc.com/projects/TAC/issues"
+            target="_blank"
+          >
+            Open Jira
+          </a>
           <Link
             className="block px-4 py-2 w-fit border rounded-lg text-nowrap cursor-pointer"
             href="/dashboard"
