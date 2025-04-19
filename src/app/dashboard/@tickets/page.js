@@ -349,7 +349,13 @@ const Tickets = () => {
   useEffect(() => {
     if (shiftId === 0) return;
     dispatch(fetchTickets({ id: shiftId, filter }));
-  }, [shiftId, sort, sort_by, dispatch]);
+
+    const interval = setInterval(() => {
+      dispatch(fetchTickets({ id: shiftId, filter }));
+    }, 1000 * 15);
+
+    return () => clearInterval(interval);
+  }, [shiftId, filter, dispatch]);
 
   const ticketName = (link) => {
     if (!link) return "No link provided";
