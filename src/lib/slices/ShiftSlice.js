@@ -3,15 +3,17 @@ import axios from "axios";
 
 const axiosInstance = axios.create({
   baseURL: "http://localhost:3030",
-  // baseURL: "http://138.201.159.116:3030",
+  // baseURL: "http://138.201.159.116/api",
 });
 
 export const fetchShifts = createAsyncThunk(
   "shifts/fetchShifts",
   async (selectedDay) => {
+    const timezoneOffset = new Date().getTimezoneOffset();
     const request = await axiosInstance.get(`/browse/shift`, {
       params: {
         date: selectedDay,
+        timezone_offset: timezoneOffset,
       },
     });
     const responce = request.data;

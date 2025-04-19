@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 
 const axiosInstance = axios.create({
   baseURL: "http://localhost:3030",
-  // baseURL: "http://138.201.159.116:3030",
+  // baseURL: "http://138.201.159.116/api",
 });
 
 export const fetchTickets = createAsyncThunk(
