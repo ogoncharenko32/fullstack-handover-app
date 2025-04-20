@@ -351,7 +351,6 @@ const Tickets = () => {
   };
 
   const handleChangeStatus = (ticket, status) => {
-    console.log(ticket, status);
     dispatch(
       updateTicket({
         ticket_id: ticket.id,
@@ -510,7 +509,7 @@ const Tickets = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <span className="inline-block px-0 md:p-2 py-0.5 text-xs border rounded bg-gray-200 text-gray-700 ">
+                    <span className="inline-block px-0 md:p-2 py-0.5 text-xs border rounded bg-gray-200 text-gray-700 max-w-full truncate ">
                       {ticketName(ticket.link)}
                     </span>
                   </a>
@@ -614,8 +613,9 @@ const Tickets = () => {
                     href={ticket.link.includes("http") ? ticket.link : null}
                     target="_blank"
                     rel="noopener noreferrer"
+                    className="truncate"
                   >
-                    <span className="inline-block px-0 md:p-2 py-0.5 text-xs border rounded bg-gray-200 text-gray-700">
+                    <span className="inline-block px-0 md:p-2 py-0.5 text-xs border rounded bg-gray-200 text-gray-700 max-w-full truncate  ">
                       {ticketName(ticket.link)}
                     </span>
                   </a>

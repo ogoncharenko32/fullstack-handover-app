@@ -48,7 +48,9 @@ const ExportModal = ({ isOpen, setIsOpen, tickets }) => {
           (list += `# ${
             ticketName(ticket.link)
               ? `[${ticketName(ticket.link)} | ${ticket.link}]`
-              : `[Link | ${ticket.link}]`
+              : `${ticket.link}.includes("http")`
+              ? `[Link | ${ticket.link}]`
+              : ""
           } *${ticket.status}* ${ticket.description} \n`);
       });
 
