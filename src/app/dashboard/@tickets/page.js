@@ -279,8 +279,9 @@ import {
   fetchTickets,
   deleteTicket,
   setFilter,
+  updateTicket,
 } from "@/lib/slices/TicketsSlice";
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RxCircleBackslash } from "react-icons/rx";
 import TicketsModal from "./modal";
@@ -288,6 +289,9 @@ import { useUser } from "@clerk/nextjs";
 import { MdEdit } from "react-icons/md";
 import ExportModal from "./exportModal";
 import { LuRefreshCw } from "react-icons/lu";
+import ticketName from "@/utils/getTicketName";
+import { ticketStatus } from "@/utils/variables";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 
 const statusColor = (status) => {
   const map = {
@@ -346,6 +350,16 @@ const Tickets = () => {
     setExportOpen(true);
   };
 
+  const handleChangeStatus = (ticket, status) => {
+    console.log(ticket, status);
+    dispatch(
+      updateTicket({
+        ticket_id: ticket.id,
+        status,
+      })
+    );
+  };
+
   useEffect(() => {
     if (shiftId === 0) return;
     dispatch(fetchTickets({ id: shiftId, filter }));
@@ -357,17 +371,19 @@ const Tickets = () => {
     return () => clearInterval(interval);
   }, [shiftId, filter, dispatch]);
 
-  const ticketName = (link) => {
-    if (!link) return "No link provided";
-    if (link.includes("jira")) {
-      const ticketName = link.split("/").pop().split("?")[0];
-      return ticketName;
-    } else if (link.includes("force.com")) {
-      return "SFDC";
-    } else {
-      return "Case";
-    }
-  };
+  // const ticketName = (link) => {
+  //   if (!link) return "No link provided";
+  //   if (link.includes("jira")) {
+  //     const ticketName = link.split("/").pop().split("?")[0];
+  //     return ticketName;
+  //   } else if (link.includes("force.com")) {
+  //     return "SFDC";
+  //   } else if (link.includes("slack")) {
+  //     return "Slack";
+  //   } else {
+  //     return "Case";
+  //   }
+  // };
 
   const handleSetFilter = (filter) => {
     dispatch(setFilter(filter));
@@ -376,9 +392,10 @@ const Tickets = () => {
   return (
     <div className="w-full min-w-fit border rounded-md p-2 border-gray-500">
       <div className="flex justify-between mb-2">
-        <h2 className="text-lg font-semibold">Tickets</h2>
-        <div className="flex gap-2">
+        {/* <h2 className="text-lg font-semibold">Tickets</h2> */}
+        <div className="flex gap-2 w-full">
           <button
+            className="cursor-pointer ml-auto"
             onClick={() => dispatch(fetchTickets({ id: shiftId, filter }))}
           >
             {loading ? (
@@ -467,65 +484,215 @@ const Tickets = () => {
         <div className="w-[40px]"></div>
       </div>
 
-      {/* Tickets */}
+      {/* Tickets In Progress*/}
       <ul className="flex flex-col">
-        {tickets?.map((ticket) => (
-          <li
-            key={ticket.id}
-            className="flex items-center gap-1 w-full px-2 py-1 hover:bg-gray-50 border-b text-sm"
-          >
-            <div className="w-[60px] md:w-[120px] xl:w-[160px]">
-              <a
-                href={ticket.link.includes("http") ? ticket.link : null}
-                target="_blank"
-                rel="noopener noreferrer"
+        {tickets &&
+          tickets.length > 0 &&
+          tickets.some((t) => t.status === "In Progress") && (
+            <h3 className="text-sm font-semibold text-center text-gray-500 underline">
+              In Progress
+            </h3>
+          )}
+        {tickets?.map(
+          (ticket) =>
+            ticket.status === "In Progress" && (
+              <li
+                key={ticket.id}
+                className="flex items-center gap-1 w-full px-2 py-1 hover:bg-gray-50 border-b text-sm "
               >
-                <span className="inline-block px-0 md:p-2 py-0.5 text-xs border rounded bg-gray-200 text-gray-700">
-                  {ticketName(ticket.link)}
-                </span>
-              </a>
-            </div>
-            <div className="w-[100px] md:w-[250px] xl:w-[500px] 2xl:w-[800px] truncate">
-              <span
-                title={ticket.description}
-                className="text-gray-800 font-semibold"
+                <div
+                  className={`w-[60px] md:w-[120px] xl:w-[160px]  ${
+                    ticketName(ticket.link) === "" ? "invisible" : "visible"
+                  }`}
+                >
+                  <a
+                    href={ticket.link.includes("http") ? ticket.link : null}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span className="inline-block px-0 md:p-2 py-0.5 text-xs border rounded bg-gray-200 text-gray-700 ">
+                      {ticketName(ticket.link)}
+                    </span>
+                  </a>
+                </div>
+                <div className="w-[100px] md:w-[250px] xl:w-[500px] 2xl:w-[800px] truncate">
+                  <span
+                    title={ticket.description}
+                    className="text-gray-800 font-semibold"
+                  >
+                    {ticket.description}
+                  </span>
+                </div>
+                <div className="w-[60px] md:w-[120px] text-right ml-auto">
+                  <Menu>
+                    <MenuButton
+                      className={`inline-flex items-center gap-2 rounded-md bg-gray-800 py-1.5 px-2 text-xs  shadow-inner shadow-white/10 focus:outline-none data-[hover]:scale-105  data-[focus]:outline-1 data-[focus]:outline-white ${statusColor(
+                        ticket.status
+                      )}`}
+                    >
+                      {ticket.status}
+                    </MenuButton>
+                    <MenuItems
+                      className="w-36 origin-top-right rounded-xl border border-white/5 bg-white/5 p-1  transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
+                      anchor="bottom"
+                    >
+                      {ticketStatus.map((status) =>
+                        status === ticket.status ? null : (
+                          <MenuItem
+                            key={status}
+                            as="button"
+                            className={`group flex w-full items-center gap-2 shadow-lg rounded-lg py-1.5 text-xs px-3 data-[focus]:scale-105 ${statusColor(
+                              status
+                            )}`}
+                            onClick={() => handleChangeStatus(ticket, status)}
+                          >
+                            {status}
+                          </MenuItem>
+                        )
+                      )}
+                    </MenuItems>
+                  </Menu>
+                  {/* <span
+                    className={`inline-block px-0 md:p-2 py-0.5 text-xs rounded border ${statusColor(
+                      ticket.status
+                    )}`}
+                  >
+                    {ticket.status}
+                  </span> */}
+                </div>
+                <div className="w-[50px] text-right">
+                  <span
+                    className={`text-xs ${
+                      ticket.important
+                        ? "text-red-500 font-bold"
+                        : "text-gray-600"
+                    }`}
+                  >
+                    {ticket.important ? "Yes" : "No"}
+                  </span>
+                </div>
+                <div className="hidden lg:block w-[80px] md:w-[120px] text-right truncate">
+                  <span className="text-xs text-gray-600">
+                    {ticket.user_name || "Unknown"}
+                  </span>
+                </div>
+                <div className="flex gap-2 justify-end w-[40px]">
+                  <button onClick={() => handleEditTicket(ticket)}>
+                    <MdEdit className="text-gray-500 hover:text-blue-600" />
+                  </button>
+                  <button onClick={() => handleDeleteTicket(ticket.id)}>
+                    <RxCircleBackslash className="text-red-500 hover:text-red-700" />
+                  </button>
+                </div>
+              </li>
+            )
+        )}
+      </ul>
+
+      {/* Tickets */}
+      <ul className="flex flex-col mt-1">
+        {tickets &&
+          tickets.length > 0 &&
+          tickets.some((t) => t.status !== "In Progress") && (
+            <h3 className="text-sm font-semibold text-center text-gray-500 underline">
+              Tickets
+            </h3>
+          )}
+        {tickets?.map(
+          (ticket) =>
+            ticket.status !== "In Progress" && (
+              <li
+                key={ticket.id}
+                className="flex items-center gap-1 w-full px-2 py-1 hover:bg-gray-50 border-b text-sm"
               >
-                {ticket.description}
-              </span>
-            </div>
-            <div className="w-[60px] md:w-[120px] text-right ml-auto">
-              <span
-                className={`inline-block px-0 md:p-2 py-0.5 text-xs rounded border ${statusColor(
-                  ticket.status
-                )}`}
-              >
-                {ticket.status}
-              </span>
-            </div>
-            <div className="w-[50px] text-right">
-              <span
-                className={`text-xs ${
-                  ticket.important ? "text-red-500 font-bold" : "text-gray-600"
-                }`}
-              >
-                {ticket.important ? "Yes" : "No"}
-              </span>
-            </div>
-            <div className="hidden lg:block w-[80px] md:w-[120px] text-right truncate">
-              <span className="text-xs text-gray-600">
-                {ticket.user_name || "Unknown"}
-              </span>
-            </div>
-            <div className="flex gap-2 justify-end w-[40px]">
-              <button onClick={() => handleEditTicket(ticket)}>
-                <MdEdit className="text-gray-500 hover:text-blue-600" />
-              </button>
-              <button onClick={() => handleDeleteTicket(ticket.id)}>
-                <RxCircleBackslash className="text-red-500 hover:text-red-700" />
-              </button>
-            </div>
-          </li>
-        ))}
+                <div
+                  className={`w-[60px] md:w-[120px] xl:w-[160px]  ${
+                    ticketName(ticket.link) === "" ? "invisible" : "visible"
+                  }`}
+                >
+                  <a
+                    href={ticket.link.includes("http") ? ticket.link : null}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span className="inline-block px-0 md:p-2 py-0.5 text-xs border rounded bg-gray-200 text-gray-700">
+                      {ticketName(ticket.link)}
+                    </span>
+                  </a>
+                </div>
+                <div className="w-[100px] md:w-[250px] xl:w-[500px] 2xl:w-[800px] truncate">
+                  <span
+                    title={ticket.description}
+                    className="text-gray-800 font-semibold"
+                  >
+                    {ticket.description}
+                  </span>
+                </div>
+                <div className="w-[60px] md:w-[120px] text-right ml-auto">
+                  <Menu>
+                    <MenuButton
+                      className={`inline-flex items-center gap-2 rounded-md bg-gray-800 py-1.5 px-2 text-xs  shadow-inner shadow-white/10 focus:outline-none data-[hover]:scale-105  data-[focus]:outline-1 data-[focus]:outline-white ${statusColor(
+                        ticket.status
+                      )}`}
+                    >
+                      {ticket.status}
+                    </MenuButton>
+                    <MenuItems
+                      className="w-36 origin-top-right rounded-xl border border-white/5 bg-white/5 p-1  transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
+                      anchor="bottom"
+                    >
+                      {ticketStatus.map((status) =>
+                        status === ticket.status ? null : (
+                          <MenuItem
+                            key={status}
+                            as="button"
+                            className={`group flex w-full items-center gap-2 shadow-lg rounded-lg py-1.5 text-xs px-3 data-[focus]:scale-105 ${statusColor(
+                              status
+                            )}`}
+                            onClick={() => handleChangeStatus(ticket, status)}
+                          >
+                            {status}
+                          </MenuItem>
+                        )
+                      )}
+                    </MenuItems>
+                  </Menu>
+
+                  {/* <span
+                    className={`inline-block px-0 md:p-2 py-0.5 text-xs rounded border ${statusColor(
+                      ticket.status
+                    )}`}
+                  >
+                    {ticket.status}
+                  </span> */}
+                </div>
+                <div className="w-[50px] text-right">
+                  <span
+                    className={`text-xs ${
+                      ticket.important
+                        ? "text-red-500 font-bold"
+                        : "text-gray-600"
+                    }`}
+                  >
+                    {ticket.important ? "Yes" : "No"}
+                  </span>
+                </div>
+                <div className="hidden lg:block w-[80px] md:w-[120px] text-right truncate">
+                  <span className="text-xs text-gray-600">
+                    {ticket.user_name || "Unknown"}
+                  </span>
+                </div>
+                <div className="flex gap-2 justify-end w-[40px]">
+                  <button onClick={() => handleEditTicket(ticket)}>
+                    <MdEdit className="text-gray-500 hover:text-blue-600" />
+                  </button>
+                  <button onClick={() => handleDeleteTicket(ticket.id)}>
+                    <RxCircleBackslash className="text-red-500 hover:text-red-700" />
+                  </button>
+                </div>
+              </li>
+            )
+        )}
       </ul>
     </div>
   );

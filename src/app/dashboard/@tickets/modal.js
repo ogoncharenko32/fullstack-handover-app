@@ -175,6 +175,7 @@ import { useUser } from "@clerk/nextjs";
 import { Dialog, DialogPanel } from "@headlessui/react";
 import React from "react";
 import { useDispatch } from "react-redux";
+import { ticketStatus } from "@/utils/variables";
 
 const TicketsModal = ({
   isOpen,
@@ -190,16 +191,16 @@ const TicketsModal = ({
   shift_id,
   ticket_id,
 }) => {
-  const ticketStatus = [
-    "In Progress",
-    "WFC",
-    "Escalated To T2",
-    "Resolved",
-    "Escalated To CSM",
-    "Escalated To RnD",
-    "Pending For MW",
-    "Pending For RMA",
-  ];
+  // const ticketStatus = [
+  //   "In Progress",
+  //   "WFC",
+  //   "Escalated To T2",
+  //   "Resolved",
+  //   "Escalated To CSM",
+  //   "Escalated To RnD",
+  //   "Pending For MW",
+  //   "Pending For RMA",
+  // ];
 
   const dispatch = useDispatch();
   const { user } = useUser();

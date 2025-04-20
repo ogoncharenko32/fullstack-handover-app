@@ -119,7 +119,7 @@ const Shifts = () => {
         <h2 className="text-lg font-semibold">Shifts</h2>
         <button
           onClick={() => setIsOpen(true)}
-          className="px-3 py-1 text-sm border border-gray-400 rounded hover:bg-gray-400 hover:text-white"
+          className="px-1 py-1 text-sm border border-gray-400 rounded hover:bg-gray-400 hover:text-white"
         >
           Start New Shift
         </button>
@@ -139,7 +139,7 @@ const Shifts = () => {
               >
                 <div className="font-medium text-gray-800">{shift.name}</div>
                 <div className="text-sm text-gray-500">
-                  {new Date(shift.created_at).toLocaleString()}
+                  {new Date(shift.created_at).toLocaleString().split(",")[0]}
                 </div>
               </button>
             </li>
