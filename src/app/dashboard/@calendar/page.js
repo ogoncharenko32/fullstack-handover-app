@@ -174,7 +174,7 @@ export default function Calendar() {
       <h2 className="text-center font-semibold mb-2">Calendar</h2>
       <div className="flex justify-between items-center mb-2">
         <button
-          className="px-2 py-1 rounded hover:bg-gray-200"
+          className="px-2 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-gray-100"
           onClick={() => {
             if (currentMonth === 1) {
               setCurrentMonth(12);
@@ -190,7 +190,7 @@ export default function Calendar() {
           .toString()
           .padStart(2, "0")}/${currentYear}`}</span>
         <button
-          className="px-2 py-1 rounded hover:bg-gray-200"
+          className="px-2 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-gray-100"
           onClick={() => {
             if (currentMonth === 12) {
               setCurrentMonth(1);
@@ -228,7 +228,7 @@ export default function Calendar() {
             <button
               key={day}
               onClick={() => handleSelectDay(fullDate)}
-              className={`rounded-full w-4 h-4 md:w-6 md:h-6 flex items-center justify-center mx-auto transition-colors
+              className={`rounded-full w-4 h-4 md:w-6 md:h-6 flex items-center justify-center mx-auto transition-colors dark:hover:bg-gray-400 dark:hover:text-gray-600
                 ${
                   isSelected
                     ? "bg-gray-700 text-white"

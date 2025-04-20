@@ -114,12 +114,12 @@ const Shifts = () => {
   };
 
   return (
-    <div className="w-full border rounded-md p-3 border-gray-400 bg-white">
+    <div className="w-full border rounded-md p-3 border-gray-400 bg-white dark:bg-gray-800">
       <div className="flex justify-between items-center mb-2">
         <h2 className="text-lg font-semibold">Shifts</h2>
         <button
           onClick={() => setIsOpen(true)}
-          className="px-1 py-1 text-sm border border-gray-400 rounded hover:bg-gray-400 hover:text-white"
+          className="px-1 py-1 text-sm border border-gray-400 rounded hover:bg-gray-400 hover:text-white dark:hover:bg-gray-700 transition dark:text-gray-200 dark:border-gray-600"
         >
           Start New Shift
         </button>
@@ -133,12 +133,16 @@ const Shifts = () => {
             <li key={shift.id}>
               <button
                 onClick={() => handleSelectShift(shift.id)}
-                className={`w-full text-left p-3 border border-gray-300 rounded hover:bg-gray-100 transition ${
-                  shift.id === shiftId ? "bg-gray-200 border-gray-400" : ""
+                className={`w-full text-right p-3 border border-gray-300 rounded hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200 transition flex flex-col gap-1  ${
+                  shift.id === shiftId
+                    ? "bg-gray-200 border-gray-400 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                    : ""
                 }`}
               >
-                <div className="font-medium text-gray-800">{shift.name}</div>
-                <div className="text-sm text-gray-500">
+                <div className="font-medium text-gray-800 dark:text-gray-100">
+                  {shift.name}
+                </div>
+                <div className="text-sm text-gray-500 mr-auto">
                   {new Date(shift.created_at).toLocaleString().split(",")[0]}
                 </div>
               </button>

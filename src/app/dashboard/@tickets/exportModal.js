@@ -63,12 +63,15 @@ const ExportModal = ({ isOpen, setIsOpen, tickets }) => {
       onClose={() => setIsOpen(false)}
       className={"z-50 relative "}
     >
-      <div className="fixed inset-0 bg-black/30" aria-hidden="true">
+      <div
+        className="fixed inset-0 bg-black/30 backdrop-blur-sm"
+        aria-hidden="true"
+      >
         <DialogPanel>
           <div className="fixed inset-0 flex w-fit h-fit items-center justify-center p-4 m-auto">
             <div className="bg-white dark:bg-gray-800 dark:text-gray-300 p-4 w-fit h-fit flex flex-col text-center justify-evenly items-center gap-4 rounded">
               <textarea
-                className=" bg-gray-100 h-[60vh] p-1"
+                className=" bg-gray-100 h-[60vh] p-1 dark:bg-gray-500 dark:text-gray-100 focus:outline-none rounded"
                 rows={tickets.length}
                 cols={100}
                 defaultValue={listState}

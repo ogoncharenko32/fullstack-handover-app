@@ -102,14 +102,14 @@ const ShiftModal = ({ isOpen, setIsOpen }) => {
     >
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/30"
+        className="fixed inset-0 bg-black/30 backdrop-blur-sm"
         aria-hidden="true"
         onClick={() => setIsOpen(false)}
       />
 
       <DialogPanel>
         <div
-          className="fixed inset-0 flex items-center justify-center p-4"
+          className="fixed inset-0 flex items-center w-fit h-fit justify-center p-4 m-auto"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="bg-white dark:bg-gray-800 p-6 w-[90vw] max-w-md rounded-lg shadow-md flex flex-col gap-4">

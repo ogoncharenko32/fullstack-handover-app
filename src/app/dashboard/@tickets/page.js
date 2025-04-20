@@ -295,14 +295,21 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 
 const statusColor = (status) => {
   const map = {
-    WFC: "bg-sky-200 border-sky-400 text-sky-700",
-    "In Progress": "bg-red-200 border-red-400 text-red-700",
-    Resolved: "bg-green-200 border-green-400 text-green-700",
-    "Escalated To T2": "bg-lime-200 border-lime-400 text-lime-700",
-    "Pending For MW": "bg-yellow-200 border-yellow-400 text-yellow-700",
-    "Pending For RMA": "bg-violet-200 border-violet-400 text-violet-700",
-    "Escalated To CSM": "bg-purple-200 border-purple-400 text-purple-700",
-    "Escalated To RnD": "bg-rose-200 border-rose-400 text-rose-700",
+    WFC: "bg-sky-200 border-sky-400 text-sky-700 dark:bg-blue-200 dark:border-blue-400 dark:text-blue-700",
+    "In Progress":
+      "bg-red-200 border-red-400 text-red-700 dark:bg-rose-200 dark:border-rose-400 dark:text-rose-700",
+    Resolved:
+      "bg-green-200 border-green-400 text-green-700 dark:bg-green-200 dark:border-green-400 dark:text-green-700",
+    "Escalated To T2":
+      "bg-lime-200 border-lime-400 text-lime-700 dark:bg-lime-200 dark:border-lime-400 dark:text-lime-700",
+    "Pending For MW":
+      "bg-yellow-200 border-yellow-400 text-yellow-700 dark:bg-yellow-200 dark:border-yellow-400 dark:text-yellow-700",
+    "Pending For RMA":
+      "bg-violet-200 border-violet-400 text-violet-700 dark:bg-violet-200 dark:border-violet-400 dark:text-violet-700",
+    "Escalated To CSM":
+      "bg-purple-200 border-purple-400 text-purple-700 dark:bg-purple-200 dark:border-purple-400 dark:text-purple-700",
+    "Escalated To RnD":
+      "bg-rose-200 border-rose-400 text-rose-700 dark:bg-rose-200 dark:border-rose-400 dark:text-rose-700",
   };
   return map[status] || "bg-gray-200 border-gray-400 text-gray-600";
 };
@@ -450,7 +457,7 @@ const Tickets = () => {
       />
 
       {/* Header row */}
-      <div className="flex w-full px-2 py-1 bg-gray-100 rounded border-b border-gray-300 font-medium text-gray-700 text-sm">
+      <div className="flex w-full px-2 py-1 bg-gray-100 rounded border-b border-gray-300 dark:bg-gray-500 dark:text-gray-100 font-medium text-gray-700 text-sm">
         <div className="w-[60px] md:w-[120px] xl:w-[160px]">Name</div>
         <div className="w-[100px] md:w-[250px] xl:w-[500px] 2xl:w-[800px]">
           Description
@@ -484,11 +491,11 @@ const Tickets = () => {
       </div>
 
       {/* Tickets In Progress*/}
-      <ul className="flex flex-col">
+      <ul className="flex flex-col ">
         {tickets &&
           tickets.length > 0 &&
           tickets.some((t) => t.status === "In Progress") && (
-            <h3 className="text-sm font-semibold text-center text-gray-500 underline">
+            <h3 className="text-sm font-semibold text-center text-gray-500 underline ">
               In Progress
             </h3>
           )}
@@ -497,10 +504,10 @@ const Tickets = () => {
             ticket.status === "In Progress" && (
               <li
                 key={ticket.id}
-                className="flex items-center gap-1 w-full px-2 py-1 hover:bg-gray-50 border-b text-sm "
+                className="flex items-center gap-1 w-full px-2 py-1 hover:bg-gray-50 border-b text-sm dark:bg-gray-500 dark:hover:bg-gray-600 rounded"
               >
                 <div
-                  className={`w-[60px] md:w-[120px] xl:w-[160px]  ${
+                  className={`w-[60px] md:w-[120px] xl:w-[160px]   ${
                     ticketName(ticket.link) === "" ? "invisible" : "visible"
                   }`}
                 >
@@ -509,7 +516,7 @@ const Tickets = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <span className="inline-block px-0 md:p-2 py-0.5 text-xs border rounded bg-gray-200 text-gray-700 max-w-full truncate ">
+                    <span className="inline-block px-0 md:p-2 py-0.5 text-xs border rounded bg-gray-200  dark:bg-gray-500 text-gray-700 dark:text-gray-100 max-w-full truncate ">
                       {ticketName(ticket.link)}
                     </span>
                   </a>
@@ -517,7 +524,7 @@ const Tickets = () => {
                 <div className="w-[100px] md:w-[250px] xl:w-[500px] 2xl:w-[800px] truncate">
                   <span
                     title={ticket.description}
-                    className="text-gray-800 font-semibold"
+                    className="text-gray-800 font-semibold dark:text-gray-100"
                   >
                     {ticket.description}
                   </span>
@@ -563,24 +570,24 @@ const Tickets = () => {
                   <span
                     className={`text-xs ${
                       ticket.important
-                        ? "text-red-500 font-bold"
-                        : "text-gray-600"
+                        ? "text-red-500 font-bold dark:text-red-400"
+                        : "text-gray-600 dark:text-gray-100"
                     }`}
                   >
                     {ticket.important ? "Yes" : "No"}
                   </span>
                 </div>
-                <div className="hidden lg:block w-[80px] md:w-[120px] text-right truncate">
-                  <span className="text-xs text-gray-600">
+                <div className="hidden lg:block w-[80px] md:w-[120px] text-right truncate ">
+                  <span className="text-xs text-gray-600 dark:text-gray-100">
                     {ticket.user_name || "Unknown"}
                   </span>
                 </div>
                 <div className="flex gap-2 justify-end w-[40px]">
                   <button onClick={() => handleEditTicket(ticket)}>
-                    <MdEdit className="text-gray-500 hover:text-blue-600" />
+                    <MdEdit className="text-gray-500 hover:text-blue-600 dark:text-gray-100" />
                   </button>
                   <button onClick={() => handleDeleteTicket(ticket.id)}>
-                    <RxCircleBackslash className="text-red-500 hover:text-red-700" />
+                    <RxCircleBackslash className="text-red-500 hover:text-red-700 dark:text-red-400" />
                   </button>
                 </div>
               </li>
@@ -602,7 +609,7 @@ const Tickets = () => {
             ticket.status !== "In Progress" && (
               <li
                 key={ticket.id}
-                className="flex items-center gap-1 w-full px-2 py-1 hover:bg-gray-50 border-b text-sm"
+                className="flex items-center gap-1 w-full px-2 py-1 hover:bg-gray-50 border-b dark:bg-gray-500 text-sm dark:hover:bg-gray-600 rounded"
               >
                 <div
                   className={`w-[60px] md:w-[120px] xl:w-[160px]  ${
@@ -615,15 +622,15 @@ const Tickets = () => {
                     rel="noopener noreferrer"
                     className="truncate"
                   >
-                    <span className="inline-block px-0 md:p-2 py-0.5 text-xs border rounded bg-gray-200 text-gray-700 max-w-full truncate  ">
+                    <span className="inline-block px-0 md:p-2 py-0.5 text-xs border rounded bg-gray-200 text-gray-700 max-w-full truncate dark:bg-gray-500  dark:text-gray-100 ">
                       {ticketName(ticket.link)}
                     </span>
                   </a>
                 </div>
-                <div className="w-[100px] md:w-[250px] xl:w-[500px] 2xl:w-[800px] truncate">
+                <div className="w-[100px] md:w-[250px] xl:w-[500px] 2xl:w-[800px] truncate  ">
                   <span
                     title={ticket.description}
-                    className="text-gray-800 font-semibold"
+                    className="text-gray-800 font-semibold dark:text-gray-100"
                   >
                     {ticket.description}
                   </span>
@@ -670,24 +677,24 @@ const Tickets = () => {
                   <span
                     className={`text-xs ${
                       ticket.important
-                        ? "text-red-500 font-bold"
-                        : "text-gray-600"
+                        ? "text-red-500 font-bold dark:text-red-400"
+                        : "text-gray-600 dark:text-gray-100"
                     }`}
                   >
                     {ticket.important ? "Yes" : "No"}
                   </span>
                 </div>
                 <div className="hidden lg:block w-[80px] md:w-[120px] text-right truncate">
-                  <span className="text-xs text-gray-600">
+                  <span className="text-xs text-gray-600 dark:text-gray-100 ">
                     {ticket.user_name || "Unknown"}
                   </span>
                 </div>
                 <div className="flex gap-2 justify-end w-[40px]">
                   <button onClick={() => handleEditTicket(ticket)}>
-                    <MdEdit className="text-gray-500 hover:text-blue-600" />
+                    <MdEdit className="text-gray-500 hover:text-blue-600 dark:text-gray-100" />
                   </button>
                   <button onClick={() => handleDeleteTicket(ticket.id)}>
-                    <RxCircleBackslash className="text-red-500 hover:text-red-700" />
+                    <RxCircleBackslash className="text-red-500 hover:text-red-700 dark:text-red-400" />
                   </button>
                 </div>
               </li>
