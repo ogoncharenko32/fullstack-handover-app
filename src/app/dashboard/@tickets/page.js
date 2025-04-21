@@ -458,8 +458,10 @@ const Tickets = () => {
 
       {/* Header row */}
       <div className="flex w-full px-2 py-1 bg-gray-100 rounded border-b border-gray-300 dark:bg-gray-500 dark:text-gray-100 font-medium text-gray-700 text-sm">
-        <div className="w-[60px] md:w-[120px] xl:w-[160px]">Name</div>
-        <div className="w-[100px] md:w-[250px] xl:w-[500px] 2xl:w-[800px]">
+        <div className="w-[100px] sm:w-[60px] md:w-[120px] xl:w-[160px]">
+          Name
+        </div>
+        <div className="invisible w-0 sm:w-[100px] sm:visible md:w-[150px] xl:w-[500px] 2xl:w-[800px]">
           Description
         </div>
         <button
@@ -507,7 +509,7 @@ const Tickets = () => {
                 className="flex items-center gap-1 w-full px-2 py-1 hover:bg-gray-50 border-b text-sm dark:bg-gray-500 dark:hover:bg-gray-600 rounded"
               >
                 <div
-                  className={`w-[60px] md:w-[120px] xl:w-[160px]   ${
+                  className={`w-[100px] sm:w-[60px] md:w-[120px] xl:w-[160px]   ${
                     ticketName(ticket.link) === "" ? "invisible" : "visible"
                   }`}
                 >
@@ -521,7 +523,7 @@ const Tickets = () => {
                     </span>
                   </a>
                 </div>
-                <div className="w-[100px] md:w-[250px] xl:w-[500px] 2xl:w-[800px] truncate">
+                <div className="invisible w-0 sm:w-[100px] sm:visible  md:w-[150px] xl:w-[500px] 2xl:w-[800px] truncate">
                   <span
                     title={ticket.description}
                     className="text-gray-800 font-semibold dark:text-gray-100"
@@ -612,7 +614,7 @@ const Tickets = () => {
                 className="flex items-center gap-1 w-full px-2 py-1 hover:bg-gray-50 border-b dark:bg-gray-500 text-sm dark:hover:bg-gray-600 rounded"
               >
                 <div
-                  className={`w-[60px] md:w-[120px] xl:w-[160px]  ${
+                  className={`w-[100px] sm:w-[60px] md:w-[120px] xl:w-[160px]  ${
                     ticketName(ticket.link) === "" ? "invisible" : "visible"
                   }`}
                 >
@@ -627,7 +629,7 @@ const Tickets = () => {
                     </span>
                   </a>
                 </div>
-                <div className="w-[100px] md:w-[250px] xl:w-[500px] 2xl:w-[800px] truncate  ">
+                <div className="invisible w-0 sm:w-[100px] sm:visible  md:w-[150px] xl:w-[500px] 2xl:w-[800px] truncate  ">
                   <span
                     title={ticket.description}
                     className="text-gray-800 font-semibold dark:text-gray-100"

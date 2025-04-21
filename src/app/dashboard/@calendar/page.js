@@ -204,7 +204,7 @@ export default function Calendar() {
         </button>
       </div>
 
-      <div className="grid grid-cols-7 text-xs font-semibold mb-1 text-center">
+      <div className="grid grid-cols-7 text-xs invisible md:visible font-semibold mb-1 text-center">
         {days.map((day) => (
           <div key={day}>{day}</div>
         ))}
