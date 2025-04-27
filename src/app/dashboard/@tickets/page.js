@@ -369,10 +369,16 @@ const Tickets = () => {
   useEffect(() => {
     if (shiftId === 0) return;
     dispatch(fetchTickets({ id: shiftId, filter }));
+    let interval;
+    const startInterval = () => {
+      interval = setInterval(() => {
+        if (document.visibilityState === "visible") {
+          dispatch(fetchTickets({ id: shiftId, filter }));
+        }
+      }, 1000 * 15);
+    };
 
-    const interval = setInterval(() => {
-      dispatch(fetchTickets({ id: shiftId, filter }));
-    }, 1000 * 15);
+    startInterval();
 
     return () => clearInterval(interval);
   }, [shiftId, filter, dispatch]);

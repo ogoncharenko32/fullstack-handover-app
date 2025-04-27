@@ -89,6 +89,12 @@ const Navigation = () => {
         </SignedOut>
 
         <SignedIn>
+          <Link
+            href="/mw"
+            className="px-4 py-2 text-sm font-medium border border-orange-500 text-orange-500 rounded-lg hover:bg-orange-50 dark:hover:bg-gray-700 transition"
+          >
+            Maintenances
+          </Link>
           <a
             href="https://jira-cableos.harmonicinc.com/projects/TAC/issues"
             target="_blank"
