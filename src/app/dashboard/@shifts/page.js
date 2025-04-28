@@ -87,7 +87,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ShiftModal from "./modal";
 
-const Shifts = () => {
+const Shifts = ({ setShiftModalOpen }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
 
@@ -108,32 +108,35 @@ const Shifts = () => {
     }
   }, [selectedDay, dispatch]);
 
-  const handleSelectShift = (id) => {
+  const handleSelectShift = ({ id, name }) => {
     dispatch(setSelectedShift(id));
     localStorage.setItem("shiftId", id);
+    localStorage.setItem("shiftName", name);
+
+    setShiftModalOpen(false);
   };
 
   return (
-    <div className="w-full border rounded-md p-3 border-gray-400 bg-white dark:bg-gray-800">
+    <div className="h-full w-full  rounded-md p-1  bg-[--background] dark:bg-gray-800 overflow-auto">
       <div className="flex justify-between items-center mb-2">
-        <h2 className="text-lg font-semibold">Shifts</h2>
+        <h2 className="text-[1.2rem] font-semibold">Shifts</h2>
         <button
           onClick={() => setIsOpen(true)}
-          className="px-1 py-1 text-sm border border-gray-400 rounded hover:bg-gray-400 hover:text-white dark:hover:bg-gray-700 transition dark:text-gray-200 dark:border-gray-600"
+          className="w-[50%] py-2 px-4 bg-blue-200 dark:bg-gray-700 hover:bg-blue-500 hover:text-white dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 rounded-lg transition cursor-pointer"
         >
           Start New Shift
         </button>
       </div>
       <ShiftModal isOpen={isOpen} setIsOpen={setIsOpen} />
-      <ul className="grid md:grid-cols-1 sm:grid-cols-2 grid-cols-1 gap-2">
+      <ul className="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-1  w-full h-full">
         {loading ? (
           <li className="text-gray-500">Loading...</li>
         ) : (
           shifts?.map((shift) => (
             <li key={shift.id}>
               <button
-                onClick={() => handleSelectShift(shift.id)}
-                className={`w-full text-right p-3 border border-gray-300 rounded hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200 transition flex flex-col gap-1  ${
+                onClick={() => handleSelectShift(shift)}
+                className={`w-full text-right p-2 border cursor-pointer border-gray-300 rounded hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200 transition flex flex-col gap-1  ${
                   shift.id === shiftId
                     ? "bg-gray-200 border-gray-400 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
                     : ""

@@ -292,6 +292,8 @@ import { LuRefreshCw } from "react-icons/lu";
 import ticketName from "@/utils/getTicketName";
 import { ticketStatus } from "@/utils/variables";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import ShiftModal from "./shiftModal";
+import { setSelectedShift } from "@/lib/slices/ShiftSlice";
 
 const statusColor = (status) => {
   const map = {
@@ -317,6 +319,7 @@ const statusColor = (status) => {
 const Tickets = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
+  const [shiftModalOpen, setShiftModalOpen] = useState(false);
 
   const { selectedShift } = useSelector((state) => state.shifts);
   const [link, setLink] = useState("");
@@ -324,6 +327,9 @@ const Tickets = () => {
   const [status, setStatus] = useState("");
   const [important, setImportant] = useState(false);
   const [ticket_id, setTicketId] = useState(null);
+
+  const shiftName = localStorage.getItem("shiftName");
+  const shiftDate = localStorage.getItem("selectedDay");
 
   const user = useUser();
 
@@ -367,6 +373,10 @@ const Tickets = () => {
   };
 
   useEffect(() => {
+    const storedId = localStorage.getItem("shiftId");
+    if (storedId) {
+      dispatch(setSelectedShift(+storedId));
+    }
     if (shiftId === 0) return;
     dispatch(fetchTickets({ id: shiftId, filter }));
     let interval;
@@ -383,29 +393,33 @@ const Tickets = () => {
     return () => clearInterval(interval);
   }, [shiftId, filter, dispatch]);
 
-  // const ticketName = (link) => {
-  //   if (!link) return "No link provided";
-  //   if (link.includes("jira")) {
-  //     const ticketName = link.split("/").pop().split("?")[0];
-  //     return ticketName;
-  //   } else if (link.includes("force.com")) {
-  //     return "SFDC";
-  //   } else if (link.includes("slack")) {
-  //     return "Slack";
-  //   } else {
-  //     return "Case";
-  //   }
-  // };
-
   const handleSetFilter = (filter) => {
     dispatch(setFilter(filter));
   };
 
   return (
-    <div className="w-full min-w-fit border rounded-md p-2 border-gray-500">
-      <div className="flex justify-between mb-2">
+    <div className="w-full  rounded-[30px] p-4 bg-white">
+      <div className="w-full flex justify-between mb-2">
         {/* <h2 className="text-lg font-semibold">Tickets</h2> */}
         <div className="flex gap-2 w-full">
+          <button
+            className="w-[20%] py-2 px-4 bg-blue-200 dark:bg-gray-700 hover:bg-blue-500 hover:text-white dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 rounded-lg transition cursor-pointer"
+            onClick={() => {
+              setShiftModalOpen(true);
+            }}
+          >
+            Select shift
+          </button>
+          {shiftName || shiftDate ? (
+            <div className="text-[0.8rem] flex gap-3 items-center justify-around m-auto">
+              <p className="truncate max-w-[200px]">shift: {shiftName}</p>
+              <p className="w-fit whitespace-nowrap">
+                date: {shiftDate?.split("T")[0]}
+              </p>
+            </div>
+          ) : (
+            ""
+          )}
           <button
             className="cursor-pointer ml-auto"
             onClick={() => dispatch(fetchTickets({ id: shiftId, filter }))}
@@ -418,7 +432,7 @@ const Tickets = () => {
           </button>
           {tickets && tickets.length > 0 && (
             <button
-              className="p-2 border border-gray-400 rounded hover:bg-gray-400 hover:text-white"
+              className="w-[20%] py-2 px-4 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 rounded-lg transition cursor-pointer"
               onClick={handleExportTickets}
             >
               Export tickets
@@ -426,7 +440,7 @@ const Tickets = () => {
           )}
           {selectedShift && (
             <button
-              className="p-2 border border-gray-400 rounded hover:bg-gray-400 hover:text-white"
+              className="w-[20%] py-2 px-4 bg-blue-200 dark:bg-gray-700 hover:bg-blue-500 hover:text-white dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 rounded-lg transition cursor-pointer"
               onClick={() => {
                 setTicketId(null);
                 setDescription("");
@@ -461,9 +475,13 @@ const Tickets = () => {
         setIsOpen={setExportOpen}
         tickets={tickets}
       />
+      <ShiftModal
+        isOpen={shiftModalOpen}
+        setShiftModalOpen={setShiftModalOpen}
+      />
 
       {/* Header row */}
-      <div className="flex w-full px-2 py-1 bg-gray-100 rounded border-b border-gray-300 dark:bg-gray-500 dark:text-gray-100 font-medium text-gray-700 text-sm">
+      <div className="flex w-full px-2 py-1  border-b border-gray-300 dark:bg-gray-500 dark:text-[#b5b7c0] font-medium text-gray-700 text-sm">
         <div className="w-[100px] sm:w-[60px] md:w-[120px] xl:w-[160px]">
           Name
         </div>
@@ -499,11 +517,11 @@ const Tickets = () => {
       </div>
 
       {/* Tickets In Progress*/}
-      <ul className="flex flex-col ">
+      <ul className="w-full flex flex-col gap-0.5 items-center">
         {tickets &&
           tickets.length > 0 &&
           tickets.some((t) => t.status === "In Progress") && (
-            <h3 className="text-sm font-semibold text-center text-gray-500 underline ">
+            <h3 className="text-[1.2rem] font-semibold text-center text-gray-500  ">
               In Progress
             </h3>
           )}
@@ -512,10 +530,10 @@ const Tickets = () => {
             ticket.status === "In Progress" && (
               <li
                 key={ticket.id}
-                className="flex items-center gap-1 w-full px-2 py-1 hover:bg-gray-50 border-b text-sm dark:bg-gray-500 dark:hover:bg-gray-600 rounded"
+                className="flex items-center gap-1 w-full h-[3rem] p-1 hover:bg-gray-50 shadow text-[0.9rem] dark:bg-gray-500 dark:hover:bg-gray-600 hover:shadow-lg transition"
               >
                 <div
-                  className={`w-[100px] sm:w-[60px] md:w-[120px] xl:w-[160px]   ${
+                  className={`w-[100px] sm:w-[60px] md:w-[120px] xl:w-[160px] items-center  ${
                     ticketName(ticket.link) === "" ? "invisible" : "visible"
                   }`}
                 >
@@ -523,16 +541,17 @@ const Tickets = () => {
                     href={ticket.link.includes("http") ? ticket.link : null}
                     target="_blank"
                     rel="noopener noreferrer"
+                    className="flex items-center"
                   >
-                    <span className="inline-block px-0 md:p-2 py-0.5 text-xs border rounded bg-gray-200  dark:bg-gray-500 text-gray-700 dark:text-gray-100 max-w-full truncate ">
+                    <span className="inline-block px-0 md:p-2 py-0.5 text-[0.8rem] rounded-lg bg-gray-200  dark:bg-gray-500 text-gray-700 dark:text-gray-100 w-full max-w-full truncate ">
                       {ticketName(ticket.link)}
                     </span>
                   </a>
                 </div>
-                <div className="invisible w-0 sm:w-[100px] sm:visible  md:w-[150px] xl:w-[500px] 2xl:w-[800px] truncate">
+                <div className="invisible w-0 sm:w-[100px] sm:visible  md:w-[150px] xl:w-[500px] 2xl:w-[800px] truncate grow">
                   <span
                     title={ticket.description}
-                    className="text-gray-800 font-semibold dark:text-gray-100"
+                    className="text-[#292d32] font-semibold dark:text-gray-100"
                   >
                     {ticket.description}
                   </span>
@@ -540,7 +559,7 @@ const Tickets = () => {
                 <div className="w-[60px] md:w-[120px] text-right ml-auto">
                   <Menu>
                     <MenuButton
-                      className={`inline-flex items-center gap-2 rounded-md bg-gray-800 py-1.5 px-2 text-xs  shadow-inner shadow-white/10 focus:outline-none data-[hover]:scale-105  data-[focus]:outline-1 data-[focus]:outline-white ${statusColor(
+                      className={` cursor-pointer inline-flex items-center gap-2 rounded-md bg-gray-800 py-1.5 px-2 text-xs  shadow-inner shadow-white/10 focus:outline-none data-[hover]:scale-105  data-[focus]:outline-1 data-[focus]:outline-white ${statusColor(
                         ticket.status
                       )}`}
                     >
@@ -592,10 +611,10 @@ const Tickets = () => {
                 </div>
                 <div className="flex gap-2 justify-end w-[40px]">
                   <button onClick={() => handleEditTicket(ticket)}>
-                    <MdEdit className="text-gray-500 hover:text-blue-600 dark:text-gray-100" />
+                    <MdEdit className="text-gray-500 hover:text-blue-600 dark:text-gray-100 cursor-pointer" />
                   </button>
                   <button onClick={() => handleDeleteTicket(ticket.id)}>
-                    <RxCircleBackslash className="text-red-500 hover:text-red-700 dark:text-red-400" />
+                    <RxCircleBackslash className="text-red-500 hover:text-red-700 dark:text-red-400 cursor-pointer" />
                   </button>
                 </div>
               </li>
@@ -608,7 +627,7 @@ const Tickets = () => {
         {tickets &&
           tickets.length > 0 &&
           tickets.some((t) => t.status !== "In Progress") && (
-            <h3 className="text-sm font-semibold text-center text-gray-500 underline">
+            <h3 className="text-[1.2rem] font-semibold text-center text-gray-500 ">
               Tickets
             </h3>
           )}
@@ -617,10 +636,10 @@ const Tickets = () => {
             ticket.status !== "In Progress" && (
               <li
                 key={ticket.id}
-                className="flex items-center gap-1 w-full px-2 py-1 hover:bg-gray-50 border-b dark:bg-gray-500 text-sm dark:hover:bg-gray-600 rounded"
+                className="flex items-center gap-1 w-full h-[3rem] p-1 hover:bg-gray-50 shadow text-[0.9rem] dark:bg-gray-500 dark:hover:bg-gray-600 hover:shadow-lg transition"
               >
                 <div
-                  className={`w-[100px] sm:w-[60px] md:w-[120px] xl:w-[160px]  ${
+                  className={`w-[100px] sm:w-[60px] md:w-[120px] xl:w-[160px] items-center  ${
                     ticketName(ticket.link) === "" ? "invisible" : "visible"
                   }`}
                 >
@@ -628,17 +647,17 @@ const Tickets = () => {
                     href={ticket.link.includes("http") ? ticket.link : null}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="truncate"
+                    className="flex items-center"
                   >
-                    <span className="inline-block px-0 md:p-2 py-0.5 text-xs border rounded bg-gray-200 text-gray-700 max-w-full truncate dark:bg-gray-500  dark:text-gray-100 ">
+                    <span className="inline-block px-0 md:p-2 py-0.5 text-[0.8rem] rounded-lg bg-gray-200  dark:bg-gray-500 text-gray-700 dark:text-gray-100 w-full max-w-full truncate ">
                       {ticketName(ticket.link)}
                     </span>
                   </a>
                 </div>
-                <div className="invisible w-0 sm:w-[100px] sm:visible  md:w-[150px] xl:w-[500px] 2xl:w-[800px] truncate  ">
+                <div className="invisible w-0 sm:w-[100px] sm:visible  md:w-[150px] xl:w-[500px] 2xl:w-[800px] truncate grow">
                   <span
                     title={ticket.description}
-                    className="text-gray-800 font-semibold dark:text-gray-100"
+                    className="text-[#292d32] font-semibold dark:text-gray-100"
                   >
                     {ticket.description}
                   </span>
@@ -646,7 +665,7 @@ const Tickets = () => {
                 <div className="w-[60px] md:w-[120px] text-right ml-auto">
                   <Menu>
                     <MenuButton
-                      className={`inline-flex items-center gap-2 rounded-md bg-gray-800 py-1.5 px-2 text-xs  shadow-inner shadow-white/10 focus:outline-none data-[hover]:scale-105  data-[focus]:outline-1 data-[focus]:outline-white ${statusColor(
+                      className={` cursor-pointer inline-flex items-center gap-2 rounded-md bg-gray-800 py-1.5 px-2 text-xs  shadow-inner shadow-white/10 focus:outline-none data-[hover]:scale-105  data-[focus]:outline-1 data-[focus]:outline-white ${statusColor(
                         ticket.status
                       )}`}
                     >
@@ -672,7 +691,6 @@ const Tickets = () => {
                       )}
                     </MenuItems>
                   </Menu>
-
                   {/* <span
                     className={`inline-block px-0 md:p-2 py-0.5 text-xs rounded border ${statusColor(
                       ticket.status
@@ -692,17 +710,17 @@ const Tickets = () => {
                     {ticket.important ? "Yes" : "No"}
                   </span>
                 </div>
-                <div className="hidden lg:block w-[80px] md:w-[120px] text-right truncate">
-                  <span className="text-xs text-gray-600 dark:text-gray-100 ">
+                <div className="hidden lg:block w-[80px] md:w-[120px] text-right truncate ">
+                  <span className="text-xs text-gray-600 dark:text-gray-100">
                     {ticket.user_name || "Unknown"}
                   </span>
                 </div>
                 <div className="flex gap-2 justify-end w-[40px]">
                   <button onClick={() => handleEditTicket(ticket)}>
-                    <MdEdit className="text-gray-500 hover:text-blue-600 dark:text-gray-100" />
+                    <MdEdit className="text-gray-500 hover:text-blue-600 dark:text-gray-100 cursor-pointer" />
                   </button>
                   <button onClick={() => handleDeleteTicket(ticket.id)}>
-                    <RxCircleBackslash className="text-red-500 hover:text-red-700 dark:text-red-400" />
+                    <RxCircleBackslash className="text-red-500 hover:text-red-700 dark:text-red-400 cursor-pointer" />
                   </button>
                 </div>
               </li>

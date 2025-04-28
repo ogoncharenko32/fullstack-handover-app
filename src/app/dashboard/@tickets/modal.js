@@ -313,14 +313,14 @@ const TicketsModal = ({
               <div className="flex gap-3 pt-4">
                 <button
                   type="submit"
-                  className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
+                  className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg cursor-pointer transition"
                 >
                   {ticket_id ? "Update" : "Create"}
                 </button>
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}
-                  className="w-full py-2 px-4 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 rounded-lg transition"
+                  className="w-full py-2 px-4 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 rounded-lg transition cursor-pointer"
                 >
                   Close
                 </button>

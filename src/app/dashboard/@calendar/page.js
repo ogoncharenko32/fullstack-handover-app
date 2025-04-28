@@ -170,8 +170,10 @@ export default function Calendar() {
   };
 
   return (
-    <div className="w-[180px] border rounded-md p-1 border-gray-400">
-      <h2 className="text-center font-semibold mb-2">Calendar</h2>
+    <div className="min-w-[200px] max-w-[240px]  rounded-md p-1  ">
+      <h2 className="text-center font-semibold  text-[1.2rem] p-1.5">
+        Calendar
+      </h2>
       <div className="flex justify-between items-center mb-2">
         <button
           className="px-2 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-gray-100"
@@ -228,7 +230,7 @@ export default function Calendar() {
             <button
               key={day}
               onClick={() => handleSelectDay(fullDate)}
-              className={`rounded-full w-4 h-4 md:w-6 md:h-6 flex items-center justify-center mx-auto transition-colors dark:hover:bg-gray-400 dark:hover:text-gray-600
+              className={`rounded-full w-4 h-4 md:w-6 md:h-6 flex items-center justify-center mx-auto transition-colors dark:hover:bg-gray-400 dark:hover:text-gray-600 cursor-pointer
                 ${
                   isSelected
                     ? "bg-gray-700 text-white"

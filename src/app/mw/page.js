@@ -20,7 +20,7 @@ const MaintenancePage = () => {
   };
 
   return (
-    <div className="flex flex-col p-2 w-full h-fit">
+    <div className="flex flex-col w-full h-fit p-4  bg-[--background]">
       <button
         className="bg-blue-500 hover:bg-blue-700 max-w-md text-white font-bold py-2 px-4 rounded cursor-pointer m-auto"
         onClick={() => {
@@ -30,14 +30,14 @@ const MaintenancePage = () => {
         Start New Maintenance
       </button>
       <MaintenanceModal isOpen={isOpen} setIsOpen={setIsOpen} />
-      <ul className="flex flex-wrap  w-full  gap-1 mt-2 p-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200  justify-center items-start">
+      <ul className="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 w-full gap-1 mt-2 p-3 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200  justify-center items-start rounded-[30px]">
         {maintenances?.map((maintenance) => (
           <li
-            className="  rounded  dark:bg-gray-700 dark:hover:bg-gray-800"
+            className="  rounded  cursor-pointer  dark:bg-gray-700 dark:hover:bg-gray-800"
             key={maintenance.id}
           >
             <Link href={`/mw/${maintenance.id}`}>
-              <div className="bg-gray-500 hover:bg-gray-700  rounded cursor-pointer dark:bg-gray-700 dark:hover:bg-gray-800">
+              <div className="bg-blue-300 hover:bg-blue-500  rounded-lg cursor-pointer dark:bg-gray-700 dark:hover:bg-gray-800">
                 <h3 className="text-white font-bold py-2 px-4">
                   {maintenance.name}
                 </h3>

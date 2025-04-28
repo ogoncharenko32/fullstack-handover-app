@@ -36,8 +36,10 @@ export default function RootLayout({ children }) {
       >
         <ClerkProvider>
           <StoreProvider>
-            <Navigation />
-            {children}
+            <div className="flex w-[100dvw] ">
+              <Navigation />
+              {children}
+            </div>
           </StoreProvider>
         </ClerkProvider>
       </body>

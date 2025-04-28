@@ -8,11 +8,13 @@ import {
   updateMaintenance,
   clearMwdata,
 } from "@/lib/slices/MaintenanceSlice";
+import ExportDataModal from "./exportDataModal";
 
 const MaintenanceDetailsPage = () => {
   const { id } = useParams();
   const router = useRouter();
   const dispatch = useDispatch();
+  const [isOpen, setIsOpen] = useState(false);
 
   const mw = useSelector((state) => state.maintenances.mwdata);
   const [formData, setFormData] = useState({});
@@ -73,372 +75,32 @@ const MaintenanceDetailsPage = () => {
 
   return (
     mw && (
-      <div className="p-6 bg-gray-100 min-h-screen text-gray-800">
+      <div className="p-6 w-full bg-gray-100 min-h-screen text-gray-800">
         <button
           onClick={() => router.back()}
           className="text-sm text-blue-600 underline mb-4"
         >
           ← Go Back
         </button>
-        <h1>{formData.name}</h1>
+        <ExportDataModal
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          formData={formData}
+        />
+        <h1 className="text-[1.2rem] text-center">{formData.name}</h1>
 
         {formData && (
-          // <form
-          //   onSubmit={handleSubmit}
-          //   className="flex flex-col gap-2 bg-gray-300 text-gray-700 p-2 rounded"
-          // >
-          //   <div className="flex justify-between">
-          //     <h3>Field</h3>
-          //     <h3>Pre</h3>
-          //     <h3>Post</h3>
-          //     <h3>Difference</h3>
-          //   </div>
-          //   <div className="flex items-center gap-4 justify-between">
-          //     <label className="w-[150px]">scm summary total</label>
-          //     <input
-          //       type="text"
-          //       // pattern="[0-9]*"
-          //       name="pre_scm_summary_total_count"
-          //       value={formData.pre_scm_summary_total_count}
-          //       onChange={handleChange}
-          //       className="border border-gray-400 rounded p-2 w-[86px] text-center text-gray-600 dark:text-gray-300 dark:placeholder:text-gray-600 placeholder:text-gray-300 focus:outline-0 "
-          //     />
-          //     <input
-          //       type="text"
-          //       // pattern="[0-9]*"
-          //       name="post_scm_summary_total_count"
-          //       value={formData.post_scm_summary_total_count}
-          //       onChange={handleChange}
-          //       className="border border-gray-400 rounded p-2 w-[86px] text-center text-gray-600 dark:text-gray-300 dark:placeholder:text-gray-600 placeholder:text-gray-300 focus:outline-0"
-          //     />
-          //     <p className=" rounded p-2 w-[86px] text-center text-gray-600 dark:text-gray-300 dark:placeholder:text-gray-600 placeholder:text-gray-300 focus:outline-0">
-          //       {formData &&
-          //       Number(formData.post_scm_summary_total_count) -
-          //         Number(formData.pre_scm_summary_total_count) >=
-          //         0 ? (
-          //         <span className="text-green-600">
-          //           {Number(formData.post_scm_summary_total_count) -
-          //             Number(formData.pre_scm_summary_total_count)}
-          //         </span>
-          //       ) : (
-          //         <span className="text-red-600">
-          //           {String(
-          //             Number(formData.post_scm_summary_total_count) -
-          //               Number(formData.pre_scm_summary_total_count)
-          //           )}
-          //         </span>
-          //       )}
-          //     </p>
-          //   </div>
-          //   <div className="flex items-center gap-4 justify-between">
-          //     <label>scm partials</label>
-          //     <input
-          //       type="text"
-          //       // pattern="[0-9]*"
-          //       name="pre_cm_partial"
-          //       value={formData.pre_cm_partial}
-          //       onChange={handleChange}
-          //       className="border border-gray-400 rounded p-2 w-md text-gray-600 dark:text-gray-300 dark:placeholder:text-gray-600 placeholder:text-gray-300 focus:outline-0"
-          //     />
-          //     <input
-          //       type="text"
-          //       // pattern="[0-9]*"
-          //       name="post_cm_partial"
-          //       value={formData.post_cm_partial}
-          //       onChange={handleChange}
-          //       className="border border-gray-400 rounded p-2 w-md text-gray-600 dark:text-gray-300 dark:placeholder:text-gray-600 placeholder:text-gray-300 focus:outline-0"
-          //     />
-          //     <p className="inline-block">
-          //       {formData &&
-          //       formData.post_cm_partial - formData.pre_cm_partial >= 0 ? (
-          //         <span className="text-green-600">
-          //           {formData.post_cm_partial - formData.pre_cm_partial}
-          //         </span>
-          //       ) : (
-          //         <span className="text-red-600">
-          //           {formData.post_cm_partial - formData.pre_cm_partial}
-          //         </span>
-          //       )}
-          //     </p>
-          //   </div>
-          //   <div className="flex items-center gap-4 justify-between">
-          //     <label>cpe total count</label>
-          //     <input
-          //       type="text"
-          //       // pattern="[0-9]*"
-          //       name="pre_cpe_total_count"
-          //       value={formData.pre_cpe_total_count}
-          //       onChange={handleChange}
-          //       className="border border-gray-400 rounded p-2 w-md text-gray-600 dark:text-gray-300 dark:placeholder:text-gray-600 placeholder:text-gray-300 focus:outline-0"
-          //     />
-          //     <input
-          //       type="text"
-          //       // pattern="[0-9]*"
-          //       name="post_cpe_total_count"
-          //       value={formData.post_cpe_total_count}
-          //       onChange={handleChange}
-          //       className="border border-gray-400 rounded p-2 w-md text-gray-600 dark:text-gray-300 dark:placeholder:text-gray-600 placeholder:text-gray-300 focus:outline-0"
-          //     />
-          //     <p className="inline-block">
-          //       {formData &&
-          //       formData.post_cpe_total_count - formData.pre_cpe_total_count >=
-          //         0 ? (
-          //         <span className="text-green-600">
-          //           {formData.post_cpe_total_count -
-          //             formData.pre_cpe_total_count}
-          //         </span>
-          //       ) : (
-          //         <span className="text-red-600">
-          //           {formData.post_cpe_total_count -
-          //             formData.pre_cpe_total_count}
-          //         </span>
-          //       )}
-          //     </p>
-          //   </div>
-          //   <div className="flex items-center gap-4 justify-between">
-          //     <label>cpe erouter count</label>
-          //     <input
-          //       type="text"
-          //       // pattern="[0-9]*"
-          //       name="pre_cpe_erouter_count"
-          //       value={formData.pre_cpe_erouter_count}
-          //       onChange={handleChange}
-          //       className="border border-gray-400 rounded p-2 w-md text-gray-600 dark:text-gray-300 dark:placeholder:text-gray-600 placeholder:text-gray-300 focus:outline-0"
-          //     />
-          //     <input
-          //       type="text"
-          //       // pattern="[0-9]*"
-          //       name="post_cpe_erouter_count"
-          //       value={formData.post_cpe_erouter_count}
-          //       onChange={handleChange}
-          //       className="border border-gray-400 rounded p-2 w-md text-gray-600 dark:text-gray-300 dark:placeholder:text-gray-600 placeholder:text-gray-300 focus:outline-0"
-          //     />
-          //     <p className="inline-block">
-          //       {formData &&
-          //       formData.post_cpe_erouter_count -
-          //         formData.pre_cpe_erouter_count >=
-          //         0 ? (
-          //         <span className="text-green-600">
-          //           {formData.post_cpe_erouter_count -
-          //             formData.pre_cpe_erouter_count}
-          //         </span>
-          //       ) : (
-          //         <span className="text-red-600">
-          //           {formData.post_cpe_erouter_count -
-          //             formData.pre_cpe_erouter_count}
-          //         </span>
-          //       )}
-          //     </p>
-          //   </div>
-          //   <div className="flex items-center gap-4 justify-between">
-          //     <label>cpe cpe count</label>
-          //     <input
-          //       type="text"
-          //       // pattern="[0-9]*"
-          //       name="pre_cpe_cpe_count"
-          //       value={formData.pre_cpe_cpe_count}
-          //       onChange={handleChange}
-          //       className="border border-gray-400 rounded p-2 w-md text-gray-600 dark:text-gray-300 dark:placeholder:text-gray-600 placeholder:text-gray-300 focus:outline-0"
-          //     />
-          //     <input
-          //       type="text"
-          //       // pattern="[0-9]*"
-          //       name="post_cpe_cpe_count"
-          //       value={formData.post_cpe_cpe_count}
-          //       onChange={handleChange}
-          //       className="border border-gray-400 rounded p-2 w-md text-gray-600 dark:text-gray-300 dark:placeholder:text-gray-600 placeholder:text-gray-300 focus:outline-0"
-          //     />
-          //     <p className="inline-block">
-          //       {formData &&
-          //       formData.post_cpe_cpe_count - formData.pre_cpe_cpe_count >=
-          //         0 ? (
-          //         <span className="text-green-600">
-          //           {formData.post_cpe_cpe_count - formData.pre_cpe_cpe_count}
-          //         </span>
-          //       ) : (
-          //         <span className="text-red-600">
-          //           {formData.post_cpe_cpe_count - formData.pre_cpe_cpe_count}
-          //         </span>
-          //       )}
-          //     </p>
-          //   </div>
-          //   <div className="flex items-center gap-4 justify-between">
-          //     <label>cpe edva count</label>
-          //     <input
-          //       type="text"
-          //       // pattern="[0-9]*"
-          //       name="pre_cpe_edva_count"
-          //       value={formData.pre_cpe_edva_count}
-          //       onChange={handleChange}
-          //       className="border border-gray-400 rounded p-2 w-md text-gray-600 dark:text-gray-300 dark:placeholder:text-gray-600 placeholder:text-gray-300 focus:outline-0"
-          //     />
-          //     <input
-          //       type="text"
-          //       // pattern="[0-9]*"
-          //       name="post_cpe_edva_count"
-          //       value={formData.post_cpe_edva_count}
-          //       onChange={handleChange}
-          //       className="border border-gray-400 rounded p-2 w-md text-gray-600 dark:text-gray-300 dark:placeholder:text-gray-600 placeholder:text-gray-300 focus:outline-0"
-          //     />
-          //     <p className="inline-block">
-          //       {formData &&
-          //       formData.post_cpe_edva_count - formData.pre_cpe_edva_count >=
-          //         0 ? (
-          //         <span className="text-green-600">
-          //           {formData.post_cpe_edva_count - formData.pre_cpe_edva_count}
-          //         </span>
-          //       ) : (
-          //         <span className="text-red-600">
-          //           {formData.post_cpe_edva_count - formData.pre_cpe_edva_count}
-          //         </span>
-          //       )}
-          //     </p>
-          //   </div>
-          //   <div className="flex items-center gap-4 justify-between">
-          //     <label>cpe emta count</label>
-          //     <input
-          //       type="text"
-          //       // pattern="[0-9]*"
-          //       name="pre_cpe_emta_count"
-          //       value={formData.pre_cpe_emta_count}
-          //       onChange={handleChange}
-          //       className="border border-gray-400 rounded p-2 w-md text-gray-600 dark:text-gray-300 dark:placeholder:text-gray-600 placeholder:text-gray-300 focus:outline-0"
-          //     />
-          //     <input
-          //       type="text"
-          //       // pattern="[0-9]*"
-          //       name="post_cpe_emta_count"
-          //       value={formData.post_cpe_emta_count}
-          //       onChange={handleChange}
-          //       className="border border-gray-400 rounded p-2 w-md text-gray-600 dark:text-gray-300 dark:placeholder:text-gray-600 placeholder:text-gray-300 focus:outline-0"
-          //     />
-          //     <p className="inline-block">
-          //       {formData &&
-          //       formData.post_cpe_emta_count - formData.pre_cpe_emta_count >=
-          //         0 ? (
-          //         <span className="text-green-600">
-          //           {formData.post_cpe_emta_count - formData.pre_cpe_emta_count}
-          //         </span>
-          //       ) : (
-          //         <span className="text-red-600">
-          //           {formData.post_cpe_emta_count - formData.pre_cpe_emta_count}
-          //         </span>
-          //       )}
-          //     </p>
-          //   </div>
-          //   <div className="flex items-center gap-4 justify-between">
-          //     <label>cpe estb count</label>
-          //     <input
-          //       type="text"
-          //       // pattern="[0-9]*"
-          //       name="pre_cpe_estb_count"
-          //       value={formData.pre_cpe_estb_count}
-          //       onChange={handleChange}
-          //       className="border border-gray-400 rounded p-2 w-md text-gray-600 dark:text-gray-300 dark:placeholder:text-gray-600 placeholder:text-gray-300 focus:outline-0"
-          //     />
-          //     <input
-          //       type="text"
-          //       // pattern="[0-9]*"
-          //       name="post_cpe_estb_count"
-          //       value={formData.post_cpe_estb_count}
-          //       onChange={handleChange}
-          //       className="border border-gray-400 rounded p-2 w-md text-gray-600 dark:text-gray-300 dark:placeholder:text-gray-600 placeholder:text-gray-300 focus:outline-0"
-          //     />
-          //     <p className="inline-block">
-          //       {formData &&
-          //       formData.post_cpe_estb_count - formData.pre_cpe_estb_count >=
-          //         0 ? (
-          //         <span className="text-green-600">
-          //           {formData.post_cpe_estb_count - formData.pre_cpe_estb_count}
-          //         </span>
-          //       ) : (
-          //         <span className="text-red-600">
-          //           {formData.post_cpe_estb_count - formData.pre_cpe_estb_count}
-          //         </span>
-          //       )}
-          //     </p>
-          //   </div>
-          //   <div className="flex items-center gap-4 justify-between">
-          //     <label>cpe d4 count</label>
-          //     <input
-          //       type="text"
-          //       // pattern="[0-9]*"
-          //       name="pre_cpe_d4_count"
-          //       value={formData.pre_cpe_d4_count}
-          //       onChange={handleChange}
-          //       className="border border-gray-400 rounded p-2 w-md text-gray-600 dark:text-gray-300 dark:placeholder:text-gray-600 placeholder:text-gray-300 focus:outline-0"
-          //     />
-          //     <input
-          //       type="text"
-          //       // pattern="[0-9]*"
-          //       name="post_cpe_d4_count"
-          //       value={formData.post_cpe_d4_count}
-          //       onChange={handleChange}
-          //       className="border border-gray-400 rounded p-2 w-md text-gray-600 dark:text-gray-300 dark:placeholder:text-gray-600 placeholder:text-gray-300 focus:outline-0"
-          //     />
-          //     <p className="inline-block">
-          //       {formData &&
-          //       formData.post_cpe_d4_count - formData.pre_cpe_d4_count >= 0 ? (
-          //         <span className="text-green-600">
-          //           {formData.post_cpe_d4_count - formData.pre_cpe_d4_count}
-          //         </span>
-          //       ) : (
-          //         <span className="text-red-600">
-          //           {formData.post_cpe_d4_count - formData.pre_cpe_d4_count}
-          //         </span>
-          //       )}
-          //     </p>
-          //   </div>
-          //   <div className="flex items-center gap-4 justify-between">
-          //     <label>cpe d6 count</label>
-          //     <input
-          //       type="text"
-          //       // pattern="[0-9]*"
-          //       name="pre_cpe_d6_count"
-          //       value={formData.pre_cpe_d6_count}
-          //       onChange={handleChange}
-          //       className="border border-gray-400 rounded p-2 w-md text-gray-600 dark:text-gray-300 dark:placeholder:text-gray-600 placeholder:text-gray-300 focus:outline-0"
-          //     />
-          //     <input
-          //       type="text"
-          //       // pattern="[0-9]*"
-          //       name="post_cpe_d6_count"
-          //       value={formData.post_cpe_d6_count}
-          //       onChange={handleChange}
-          //       className="border border-gray-400 rounded p-2 w-md text-gray-600 dark:text-gray-300 dark:placeholder:text-gray-600 placeholder:text-gray-300 focus:outline-0"
-          //     />
-          //     <p className="inline-block">
-          //       {formData &&
-          //       formData.post_cpe_d6_count - formData.pre_cpe_d6_count >= 0 ? (
-          //         <span className="text-green-600">
-          //           {formData.post_cpe_d6_count - formData.pre_cpe_d6_count}
-          //         </span>
-          //       ) : (
-          //         <span className="text-red-600">
-          //           {formData.post_cpe_d6_count - formData.pre_cpe_d6_count}
-          //         </span>
-          //       )}
-          //     </p>
-          //   </div>
-          //   <button
-          //     type="submit"
-          //     className="mt-4 bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800"
-          //   >
-          //     Save
-          //   </button>
-          // </form>
-
           <form
             onSubmit={handleSubmit}
-            className="bg-gray-200 text-gray-700 p-4 rounded"
+            className="bg-white text-gray-700 p-4 rounded text-[1rem]"
           >
             <table className="w-full table-auto border-collapse text-center">
               <thead>
-                <tr className="bg-gray-400">
-                  <th className="p-2 border">Field</th>
-                  <th className="p-2 border">Pre</th>
-                  <th className="p-2 border">Post</th>
-                  <th className="p-2 border">Difference</th>
+                <tr className="bg-blue-100  ">
+                  <th className="p-2 rounded-tl">Field</th>
+                  <th className="p-2 ">Pre</th>
+                  <th className="p-2 ">Post</th>
+                  <th className="p-2 rounded-tr">Difference</th>
                 </tr>
               </thead>
               <tbody>
@@ -461,27 +123,29 @@ const MaintenanceDetailsPage = () => {
                     ? Math.abs((pre / post) * 100)
                     : Math.abs((post / pre) * 100);
                   return (
-                    <tr key={field} className="border">
-                      <td className="p-2 border text-left">{label}</td>
-                      <td className="p-2 border">
+                    <tr key={field} className="hover:bg-gray-100 rounded">
+                      <td className="p-2  text-left">
+                        <code>{label}</code>
+                      </td>
+                      <td className="p-2 ">
                         <input
                           type="text"
                           name={`pre_${field}`}
-                          value={formData[`pre_${field}`]}
+                          value={formData[`pre_${field}`] ?? 0}
                           onChange={handleChange}
-                          className="border border-gray-400 rounded p-1 w-[86px] text-center"
+                          className="border-b border-b-gray-400  p-1 w-full text-center focus:outline-0"
                         />
                       </td>
-                      <td className="p-2 border">
+                      <td className="p-2 ">
                         <input
                           type="text"
                           name={`post_${field}`}
-                          value={formData[`post_${field}`]}
+                          value={formData[`post_${field}`] ?? 0}
                           onChange={handleChange}
-                          className="border border-gray-400 rounded p-1 w-[86px] text-center"
+                          className="border-b border-b-gray-400  p-1 w-full text-center focus:outline-0"
                         />
                       </td>
-                      <td className="p-2 border-none font-semibold ">
+                      <td className="p-2 border-none w-[160px] font-semibold ">
                         <div className="flex justify-between">
                           <div
                             className={
@@ -518,10 +182,17 @@ const MaintenanceDetailsPage = () => {
                 })}
               </tbody>
             </table>
-            <div className="flex justify-end mt-4">
+            <div className="flex mt-4 gap-1 justify-between">
+              <button
+                type="button"
+                onClick={() => setIsOpen(true)}
+                className="w-[20%] py-2 px-4 bg-gray-200 dark:bg-gray-700 hover:bg-gray-500 hover:text-white dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 rounded-lg transition cursor-pointer"
+              >
+                Export data
+              </button>
               <button
                 type="submit"
-                className="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800"
+                className="w-[20%] py-2 px-4 bg-blue-200 dark:bg-gray-700 hover:bg-blue-500 hover:text-white dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 rounded-lg transition cursor-pointer"
               >
                 Save
               </button>
